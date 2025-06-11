@@ -1,20 +1,23 @@
-import { Layout, List, Text } from '@ui-kitten/components';
-import { Fragment } from 'react';
-import { Image } from 'react-native';
+import { Layout, List, Text } from "@ui-kitten/components";
+import { Fragment } from "react";
+import { Image } from "react-native";
+import Markdown from "react-native-markdown-display";
 
-import { useThemeColor } from '@/hooks/useThemeColor';
+import { useThemeColor } from "@/hooks/useThemeColor";
 import {
   ImagesMessage,
   Message,
   TextMessage,
-} from '@/interfaces/chat.interfaces';
+} from "@/interfaces/chat.interfaces";
+import { useBasicPromptStore } from "@/store/basic-prompt/basicPrompt.store";
 
 interface Props {
   messages: Message[];
 }
 
 export const ChatMessages = ({ messages }: Props) => {
-  const primaryColor = useThemeColor({}, 'icon');
+  const primaryColor = useThemeColor({}, "icon");
+  const isGeminiWriting = useBasicPromptStore((state) => state.isGeminiWriting);
 
   return (
     <Layout style={{ flex: 1 }}>
@@ -23,7 +26,7 @@ export const ChatMessages = ({ messages }: Props) => {
         inverted
         style={{ paddingHorizontal: 16 }}
         renderItem={({ item }) => {
-          if (item.type === 'text') {
+          if (item.type === "text") {
             return (
               <MessageItem
                 message={item as TextMessage}
@@ -40,6 +43,8 @@ export const ChatMessages = ({ messages }: Props) => {
           );
         }}
       />
+
+      {isGeminiWriting && <Text>Thinking...</Text>}
     </Layout>
   );
 };
@@ -51,24 +56,36 @@ const MessageItem = ({
   message: TextMessage;
   userColor: string;
 }) => {
-  const isCurrentUser = message.sender === 'user';
+  const isCurrentUser = message.sender === "user";
+
+  const markdownStyles = {
+    body: {
+      color: isCurrentUser ? "white" : "black",
+    },
+    paragraph: {
+      color: isCurrentUser ? "white" : "black",
+    },
+    text: {
+      color: isCurrentUser ? "white" : "black",
+    },
+  };
 
   return (
     <Layout
       style={{
         marginVertical: 4,
-        alignItems: isCurrentUser ? 'flex-end' : 'flex-start',
-        backgroundColor: isCurrentUser ? userColor : '#EBEBEB',
+        alignItems: isCurrentUser ? "flex-end" : "flex-start",
+        backgroundColor: isCurrentUser ? userColor : "#EBEBEB",
         padding: 10,
         borderRadius: 16,
         borderBottomLeftRadius: isCurrentUser ? 0 : 16,
         borderBottomRightRadius: isCurrentUser ? 16 : 0,
-        maxWidth: '80%',
-        alignSelf: isCurrentUser ? 'flex-end' : 'flex-start',
+        maxWidth: "80%",
+        alignSelf: isCurrentUser ? "flex-end" : "flex-start",
       }}
     >
-      <Text style={{ color: isCurrentUser ? 'white' : 'black' }}>
-        {message.text}
+      <Text style={{ color: isCurrentUser ? "white" : "black" }}>
+        <Markdown style={markdownStyles}>{message.text}</Markdown>
       </Text>
     </Layout>
   );
@@ -81,7 +98,7 @@ const MessageItemImage = ({
   message: ImagesMessage;
   userColor: string;
 }) => {
-  const isCurrentUser = message.sender === 'user';
+  const isCurrentUser = message.sender === "user";
   const isMultipleImages = message.images && message.images.length > 1;
 
   return (
@@ -89,15 +106,15 @@ const MessageItemImage = ({
       <Layout
         style={{
           marginVertical: 4,
-          alignItems: isCurrentUser ? 'flex-end' : 'flex-start',
-          backgroundColor: 'transparent',
+          alignItems: isCurrentUser ? "flex-end" : "flex-start",
+          backgroundColor: "transparent",
         }}
       >
         <Layout
           style={{
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "center",
             gap: 8,
           }}
         >
