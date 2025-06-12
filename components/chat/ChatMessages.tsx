@@ -9,7 +9,7 @@ import {
   Message,
   TextMessage,
 } from "@/interfaces/chat.interfaces";
-import { useBasicPromptStore } from "@/store/basic-prompt/basicPrompt.store";
+import { useBasicPromptStreamStore } from "@/store/basic-prompt/basicPromptStream.store";
 
 interface Props {
   messages: Message[];
@@ -17,7 +17,9 @@ interface Props {
 
 export const ChatMessages = ({ messages }: Props) => {
   const primaryColor = useThemeColor({}, "icon");
-  const isGeminiWriting = useBasicPromptStore((state) => state.isGeminiWriting);
+  const isGeminiWriting = useBasicPromptStreamStore(
+    (state) => state.isGeminiWriting
+  );
 
   return (
     <Layout style={{ flex: 1 }}>

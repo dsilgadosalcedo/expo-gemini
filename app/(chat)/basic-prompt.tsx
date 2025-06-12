@@ -1,11 +1,11 @@
 import { ChatMessages } from "@/components/chat/ChatMessages";
 import CustomInputBox from "@/components/chat/CustomInputBox";
-import { useBasicPromptStore } from "@/store/basic-prompt/basicPrompt.store";
+import { useBasicPromptStreamStore } from "@/store/basic-prompt/basicPromptStream.store";
 import { useShallow } from "zustand/react/shallow";
 import { Layout } from "@ui-kitten/components";
 
 const BasicPromptScreen = () => {
-  const { messages, addMessage } = useBasicPromptStore(
+  const { messages, addMessage } = useBasicPromptStreamStore(
     useShallow((state) => state)
   );
 
